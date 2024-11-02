@@ -70,7 +70,7 @@ def handle_request():
     return "Function triggered!", 200
 
 @app.route("/health", methods=["GET"])
-def health_request()
+def health_request():
     return "working", 200
 
 if __name__ == "__main__":

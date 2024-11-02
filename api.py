@@ -9,7 +9,7 @@ import os
 
 # Configuration
 URL = "traccer.onrender.com"  # Host without protocol
-HEALTHCHECK_ENDPOINT = "/healthcheck"  # Health check endpoint
+HEALTHCHECK_ENDPOINT = "/login"  # Health check endpoint
 TIMEOUT = 60  # Timeout for the request in seconds
 
 # Retrieve environment variables

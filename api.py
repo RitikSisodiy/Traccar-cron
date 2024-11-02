@@ -90,5 +90,5 @@ def handle_request():
     return "Function triggered!", 200
 
 if __name__ == "__main__":
-    app.run(int(port=os.getenv("PORT"))
+    app.run(int(port=os.getenv("PORT")))
 

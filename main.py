@@ -70,7 +70,7 @@ def restart_service():
     finally:
         # Ensure the connection is closed
         connection.close()
-
-if not ping_website():
-    print("Website is down. Restarting service...")
-    restart_service()
+def check_service():
+    if not ping_website():
+        print("Website is down. Restarting service...")
+        restart_service()

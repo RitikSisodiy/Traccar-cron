@@ -86,7 +86,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def handle_request():
-    trigger_function()
+    check_service()
     return "Function triggered!", 200
 
 if __name__ == "__main__":

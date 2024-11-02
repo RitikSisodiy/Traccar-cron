@@ -27,7 +27,7 @@ def ping_website():
         connection.request("GET", HEALTHCHECK_ENDPOINT)
         response = connection.getresponse()
 
-        if response.status == 200:
+        if response.status == 302:
             print("Website is up.")
             return True
         else:

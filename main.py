@@ -1,10 +1,10 @@
 import http.client
 import json
 import os
-import time
 
 # Configuration
-URL = "https://traccer.onrender.com/healthcheck"  # The website you want to ping
+URL = "traccer.onrender.com"  # Host without protocol
+HEALTHCHECK_ENDPOINT = "/healthcheck"  # Health check endpoint
 TIMEOUT = 60  # Timeout for the request in seconds
 
 # Retrieve environment variables
@@ -18,8 +18,8 @@ if not RENDER_API_TOKEN or not SERVICE_ID:
 def ping_website():
     try:
         # Establish a connection
-        connection = http.client.HTTPConnection(URL, timeout=TIMEOUT)
-        connection.request("GET", "/")
+        connection = http.client.HTTPSConnection(URL, timeout=TIMEOUT)
+        connection.request("GET", HEALTHCHECK_ENDPOINT)
         response = connection.getresponse()
 
         if response.status == 200:
@@ -70,7 +70,9 @@ def restart_service():
     finally:
         # Ensure the connection is closed
         connection.close()
+
 def check_service():
     if not ping_website():
         print("Website is down. Restarting service...")
         restart_service()
+

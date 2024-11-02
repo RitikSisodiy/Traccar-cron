@@ -1,24 +1,15 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from main import check_service‎
 import os
-def trigger_function():
-    print("Function triggered!")
+from flask import Flask
 
-class SimpleHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        # Trigger the function on any GET request
-        check_service‎()
-        
-        # Send a basic response
-        self.send_response(200)
-        self.send_header('Content-type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(b'Function triggered!')
+app = Flask(__name__)
 
-# Server settings
-port = int(os.getenv("PORT"))
-server_address = ('', port)
-httpd = HTTPServer(server_address, SimpleHandler)
+@app.route("/", methods=["GET"])
+def handle_request():
+    trigger_function()
+    return "Function triggered!", 200
 
-print(f"Server running on port {port}")
-httpd.serve_forever()
+if __name__ == "__main__":
+    app.run(int(port=os.getenv("PORT"))
+

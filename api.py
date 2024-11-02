@@ -69,6 +69,10 @@ def handle_request():
     check_service()
     return "Function triggered!", 200
 
+@app.route("/health", methods=["GET"])
+def health_request()
+    return "working", 200
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))  # Default port to 5000 if not set
     app.run(port=port)

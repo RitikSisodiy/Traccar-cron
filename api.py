@@ -1,14 +1,9 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import os
 from flask import Flask
-
-
-import http.client
-import json
+import requests
 import os
 
 # Configuration
-URL = "traccer.onrender.com"  # Host without protocol
+URL = "https://traccer.onrender.com"  # Complete URL with protocol
 HEALTHCHECK_ENDPOINT = "/login"  # Health check endpoint
 TIMEOUT = 60  # Timeout for the request in seconds
 
@@ -22,29 +17,23 @@ if not RENDER_API_TOKEN or not SERVICE_ID:
 
 def ping_website():
     try:
-        # Establish a connection
-        connection = http.client.HTTPSConnection(URL, timeout=TIMEOUT)
-        connection.request("GET", HEALTHCHECK_ENDPOINT)
-        response = connection.getresponse()
+        # Send a HEAD request to the health check endpoint
+        response = requests.head(f"{URL}{HEALTHCHECK_ENDPOINT}", timeout=TIMEOUT)
 
-        if response.status == 302:
+        # Consider both 200 and 302 as "up" statuses
+        if response.status_code in [200, 302]:
             print("Website is up.")
             return True
         else:
-            print(f"Unexpected status code: {response.status}")
+            print(f"Unexpected status code: {response.status_code}")
             return False
     except Exception as e:
         print(f"Error accessing website: {e}")
         return False
-    finally:
-        # Ensure the connection is closed
-        connection.close()
+
 
 def restart_service():
     try:
-        # Establish HTTPS connection to the Render API
-        connection = http.client.HTTPSConnection("api.render.com")
-
         # Headers for the POST request
         headers = {
             "accept": "application/json",
@@ -53,34 +42,25 @@ def restart_service():
         }
 
         # Endpoint URL for the deploy request
-        endpoint = f"/v1/services/{SERVICE_ID}/deploys"
+        endpoint = f"https://api.render.com/v1/services/{SERVICE_ID}/deploys"
 
         # Send the POST request
-        connection.request("POST", endpoint, headers=headers)
+        response = requests.post(endpoint, headers=headers)
 
-        # Get the response
-        response = connection.getresponse()
-        data = response.read().decode()
-
-        if response.status == 201:
+        if response.status_code == 201:
             print("Service restart triggered successfully.")
-            print("Response:", data)
+            print("Response:", response.json())
         else:
             print("Failed to trigger service restart.")
-            print("Status:", response.status)
-            print("Response:", data)
-
+            print("Status:", response.status_code)
+            print("Response:", response.text)
     except Exception as e:
         print("Error occurred during service restart:", e)
-    finally:
-        # Ensure the connection is closed
-        connection.close()
 
 def check_service():
     if not ping_website():
         print("Website is down. Restarting service...")
         restart_service()
-
 
 app = Flask(__name__)
 
@@ -90,5 +70,6 @@ def handle_request():
     return "Function triggered!", 200
 
 if __name__ == "__main__":
-    app.run(int(port=os.getenv("PORT")))
-
+    port = int(os.getenv("PORT", 5000))  # Default port to 5000 if not set
+    app.run(port=port)
+    

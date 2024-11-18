@@ -3,8 +3,8 @@ import requests
 import os
 
 # Configuration
-URL = "https://traccer.onrender.com"  # Complete URL with protocol
-HEALTHCHECK_ENDPOINT = "/login"  # Health check endpoint
+URL = "https://"+os.getenv("HEALTHCHECK_ENDPOINT")  # Host without protocol
+HEALTHCHECK_ENDPOINT = "/healthcheck"  # Health check endpoint
 TIMEOUT = 60  # Timeout for the request in seconds
 
 # Retrieve environment variables

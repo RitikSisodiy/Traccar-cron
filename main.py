@@ -3,7 +3,7 @@ import json
 import os
 
 # Configuration
-URL = "traccer.onrender.com"  # Host without protocol
+URL = os.getenv("HEALTHCHECK_ENDPOINT")  # Host without protocol
 HEALTHCHECK_ENDPOINT = "/healthcheck"  # Health check endpoint
 TIMEOUT = 60  # Timeout for the request in seconds
 
